@@ -7,12 +7,12 @@ A web application to upload, view, manage, and share media across devices.
   
 ##What does it do?
 This provides functionality to:
-*Upload and archive media
-*Identify duplicate files, based on capture time, source, and file size.
-*Basic editing functionality (crop, resize)
-*Add notes and labels to individual or groups of files.
-*Scroll though thousands of images without overwhelming the browser.
-*Search across a variety of criteria using Angular Material components such as auto complete and an OData backend service.
+*	Upload and archive media
+*	Identify duplicate files, based on capture time, source, and file size.
+*	Basic editing functionality (crop, resize)
+*	Add notes and labels to individual or groups of files.
+*	Scroll though thousands of images without overwhelming the browser.
+*	Search across a variety of criteria using Angular Material components such as auto complete and an OData backend service.
 
 
 ##How was it made?
