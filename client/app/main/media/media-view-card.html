@@ -1,0 +1,20 @@
+<!--card example -->
+<div class='md-padding' layout="row" layout-wrap>
+  <div  ng-repeat="imgSet in vm.rows.vals" >
+    <md-card style="width: 300px;"
+             ng-if="imgSet.length>1">
+
+    <img ng-repeat="img in imgSet" ng-src="{{::img.destDir}}" class="md-card-image" alt="user avatar">
+    <md-card-content>
+      <h2>{{::imgSet[0]._id}}</h2>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+        magna aliqua</p>
+    </md-card-content>
+    <div class="md-actions" layout="row" layout-align="end center">
+      <md-button>Save</md-button>
+      <md-button>View</md-button>
+    </div>
+
+  </md-card>
+</div>
+</div>

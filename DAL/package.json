@@ -1,0 +1,29 @@
+{
+  "name": "media-api",
+  "version": "1.0.0",
+  "description": "api to host media data",
+  "main": "config.js",
+  "dependencies": {
+    "bcrypt-nodejs": "^0.0.3",
+    "body-parser": "^1.14.1",
+    "cluster": "^0.7.7",
+    "connect-busboy": "0.0.2",
+    "express": "^4.13.3",
+    "lodash": "^4.6.1",
+    "method-override": "^2.3.5",
+    "moment": "^2.12.0",
+    "mongodb": "^2.1.4",
+    "mongoose": "^4.1.10",
+    "morgan": "^1.6.1",
+    "multer": "^1.1.0",
+    "save": "^2.1.1",
+    "simple-odata-server": "^0.2.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC"
+}

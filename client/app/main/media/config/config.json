@@ -1,0 +1,336 @@
+{
+  "fieldModels": [
+    {
+      "name": "Directory",
+      "key": "Directory",
+      "isSelected": true,
+      "isVisible": true,
+      "fieldOrder": 1,
+      "isFilterable": true,
+      "isFilterSet": false,
+      "filterVals": false,
+      "groupOrder": false,
+      "sortOrder": false,
+      "dataType": "string",
+      "controlType": "string",
+      "isWritable": true,
+      "isRequired": true
+    },
+    {
+      "name": "File Name",
+      "key": "FileName",
+      "isSelected": true,
+      "isVisible": true,
+      "fieldOrder": 2,
+      "isFilterable": true,
+      "isFilterSet": false,
+      "filterVals": false,
+      "groupOrder": false,
+      "sortOrder": false,
+      "dataType": "string",
+      "controlType": "string",
+      "isWritable": true,
+      "isRequired": true
+    },
+    {
+      "name": "Make",
+      "key": "Make",
+      "isSelected": true,
+      "isVisible": true,
+      "fieldOrder": 3,
+      "isFilterable": true,
+      "isFilterSet": false,
+      "filterVals": false,
+      "groupOrder": false,
+      "sortOrder": false,
+      "dataType": "string",
+      "controlType": "string",
+      "isWritable": true,
+      "isRequired": true
+    },
+    {
+      "name": "Dir Directory",
+      "key": "destDir",
+      "isSelected": true,
+      "isVisible": true,
+      "fieldOrder": 4,
+      "isFilterable": true,
+      "isFilterSet": false,
+      "filterVals": false,
+      "groupOrder": false,
+      "sortOrder": false,
+      "dataType": "string",
+      "controlType": "string",
+      "isWritable": true,
+      "isRequired": true
+    },
+    {
+      "name": "Model",
+      "key": "Model",
+      "isSelected": true,
+      "isVisible": true,
+      "fieldOrder": 5,
+      "isFilterable": true,
+      "isFilterSet": false,
+      "filterVals": false,
+      "groupOrder": false,
+      "sortOrder": false,
+      "dataType": "string",
+      "controlType": "string",
+      "isWritable": true,
+      "isRequired": true
+    },
+    {
+      "name": "Orientation",
+      "key": "Orientation",
+      "isSelected": true,
+      "isVisible": true,
+      "fieldOrder": 6,
+      "isFilterable": false,
+      "isFilterSet": false,
+      "filterVals": false,
+      "groupOrder": false,
+      "sortOrder": false,
+      "dataType": "string",
+      "controlType": "string",
+      "isWritable": true,
+      "isRequired": true
+    },
+    {
+      "name": "Date Pick",
+      "key": "datePick",
+      "isSelected": true,
+      "isVisible": true,
+      "fieldOrder": 7,
+      "isFilterable": false,
+      "isFilterSet": false,
+      "filterVals": [],
+      "groupOrder": false,
+      "sortOrder": false,
+      "dataType": "string",
+      "controlType": "datetime",
+      "isWritable": true,
+      "isRequired": true
+    },
+    {
+      "name": "File Size",
+      "key": "FileSize",
+      "isSelected": true,
+      "isVisible": true,
+      "fieldOrder": 8,
+      "isFilterable": false,
+      "isFilterSet": false,
+      "filterVals": [],
+      "groupOrder": false,
+      "sortOrder": false,
+      "dataType": "string",
+      "controlType": "string",
+      "isWritable": true,
+      "isRequired": true
+    },
+    {
+      "name": "GPS Position",
+      "key": "GPSPosition",
+      "isSelected": true,
+      "isVisible": true,
+      "fieldOrder": 9,
+      "isFilterable": false,
+      "isFilterSet": false,
+      "filterVals": [],
+      "groupOrder": false,
+      "sortOrder": false,
+      "dataType": "int",
+      "controlType": "int",
+      "isWritable": true,
+      "isRequired": true
+    },
+    {
+      "name": "GPS Altitude",
+      "key": "GPSAltitude",
+      "isSelected": true,
+      "isVisible": true,
+      "fieldOrder": 10,
+      "isFilterable": false,
+      "isFilterSet": false,
+      "filterVals": [],
+      "groupOrder": false,
+      "sortOrder": false,
+      "dataType": "int",
+      "controlType": "int",
+      "isWritable": true,
+      "isRequired": true
+    }
+  ],
+  "distinctFlds": {
+    "make": [
+      {
+        "name": "Apple"
+      },
+      {
+        "name": "samsung"
+      },
+      {
+        "name": "SAMSUNG"
+      },
+      {
+        "name": "Canon"
+      },
+      {
+        "name": "OLYMPUS IMAGING CORP."
+      },
+      {
+        "name": "Camera Plus"
+      },
+      {
+        "name": "SONY"
+      },
+      {
+        "name": "Sony"
+      },
+      {
+        "name": "Hewlett-Packard"
+      },
+      {
+        "name": "PANASONIC"
+      },
+      {
+        "name": "Hewlett-Packard Company"
+      },
+      {
+        "name": "EASTMAN KODAK COMPANY"
+      },
+      {
+        "name": "NIKON CORPORATION"
+      },
+      {
+        "name": "OLYMPUS DIGITAL CAMERA"
+      },
+      {
+        "name": "NIKON"
+      }
+    ],
+    "model": [
+      {
+        "name": "iPhone 4S"
+      },
+      {
+        "name": "GT-N7105"
+      },
+      {
+        "name": "SAMSUNG-SGH-I317"
+      },
+      {
+        "name": "MP620 series"
+      },
+      {
+        "name": "Canon PowerShot S95"
+      },
+      {
+        "name": "Canon EOS DIGITAL REBEL"
+      },
+      {
+        "name": "Canon PowerShot SD4000 IS"
+      },
+      {
+        "name": "Canon PowerShot A2000 IS"
+      },
+      {
+        "name": "E-PL1"
+      },
+      {
+        "name": "iPhone 4"
+      },
+      {
+        "name": "iPhone 3GS"
+      },
+      {
+        "name": "Canon PowerShot SD790 IS"
+      },
+      {
+        "name": "iPhone"
+      },
+      {
+        "name": "DSC-RX100"
+      },
+      {
+        "name": "SAMSUNG-SM-N910A"
+      },
+      {
+        "name": "Canon PowerShot S100"
+      },
+      {
+        "name": "Canon PowerShot S110"
+      },
+      {
+        "name": "hp photosmart 612"
+      },
+      {
+        "name": "PV-L2000"
+      },
+      {
+        "name": "Canon PowerShot S500"
+      },
+      {
+        "name": "Canon PowerShot S400"
+      },
+      {
+        "name": "HP PhotoSmart 715"
+      },
+      {
+        "name": "DSC-P100"
+      },
+      {
+        "name": "Canon PowerShot S200"
+      },
+      {
+        "name": "Canon EOS-1D Mark II"
+      },
+      {
+        "name": "KODAK EASYSHARE C653 ZOOM DIGITAL CAMERA"
+      },
+      {
+        "name": "Canon PowerShot SD400"
+      },
+      {
+        "name": "DSC-P93A"
+      },
+      {
+        "name": "DSC-T10"
+      },
+      {
+        "name": "NIKON D200"
+      },
+      {
+        "name": "DCR-DVD610"
+      },
+      {
+        "name": "iPhone 3G"
+      },
+      {
+        "name": "SPH-D710"
+      },
+      {
+        "name": "SPH-L710"
+      },
+      {
+        "name": "DSC-S750"
+      },
+      {
+        "name": "E8400"
+      },
+      {
+        "name": "Canon PowerShot SX130 IS"
+      },
+      {
+        "name": "iPhone 5s"
+      },
+      {
+        "name": "iPhone 6s"
+      },
+      {
+        "name": "MG6200 series"
+      }
+    ]
+  }
+}
+
