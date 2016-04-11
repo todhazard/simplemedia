@@ -1,0 +1,98 @@
+<!-- main category selection bars - yeat/month -->
+
+<!--main Menu -->
+
+<div layout="row" layout-xs="column">
+  <div flex>
+
+    <div class="header md-accent-bg" layout="column">
+
+      <div class="header-content" layout="row" layout-align="space-between" layout-wrap flex>
+        <div class="toolbar" layout="row" layout-align="space-between center" flex-order="3">
+
+
+          <!-- odata fields options toolbar -->
+
+          <md-button aria-label="comment" class="md-icon-button">
+            <i class="material-icons media-toolbar-icon">list</i>
+            <md-tooltip><span>Board</span></md-tooltip>
+
+          </md-button>
+          <md-button aria-label="label" class="md-icon-button">
+            <i class="material-icons media-toolbar-icon">filter_list</i>
+            <md-tooltip><span>Board</span></md-tooltip>
+
+          </md-button>
+          <md-button aria-label="photo" class="md-icon-button">
+            <i class="material-icons media-toolbar-icon">filter</i>
+            <md-tooltip><span>Board</span></md-tooltip>
+
+          </md-button>
+        </div>
+      </div>
+    </div>
+
+    <!-- tabs -->
+    <div>
+      <md-content class="md-padding">
+        <md-tabs md-dynamic-height md-border-bottom>
+
+          <!-- year / month query filter options -->
+          <md-tab label="Monthly">
+            <md-tooltip><span>Select media my year / month</span></md-tooltip>
+            <md-content class="md-padding">
+              <md-tabs md-dynamic-height md-border-bottom>
+                <md-tab ng-repeat="yr in vm.odata.dates.enums.yearsList"
+                        label="{{yr}}" ng-click="vm.setYear(yr)">
+                </md-tab>
+              </md-tabs>
+              <md-tabs md-dynamic-height md-border-bottom>
+                <md-tab ng-repeat="mo in vm.odata.dates.enums.monthsList"
+                        label="{{mo}}" ng-click="vm.setMonth(mo)">
+                </md-tab>
+              </md-tabs>
+            </md-content>
+          </md-tab>
+
+          <!-- filter controls -->
+          <md-tab label=" Query">
+            <md-tab-body>
+              <div layout="row" layout-wrap>
+                <div flex>
+
+                  <label>Select media between </label>
+                  <md-datepicker ng-model="vm.odata.dates.selectedDateStart"
+                                 min-date="vm.odata.dates.minDate"
+                                 md-placeholder="Start date"
+                                 ng-change="vm.updateSearchQuery()"></md-datepicker>
+                  <label> and </label>
+                  <md-datepicker ng-model="vm.odata.dates.selectedDateEnd"
+                                 min-date="vm.odata.dates.selectedDateStart"
+                                 md-placeholder="End date"
+                                 max-date="vm.odata.dates.maxDate"
+                                 ng-change="vm.updateSearchQuery()"></md-datepicker>
+
+                  <auto-complete-multi-sel field-key="Make"  field-name="Make" ></auto-complete-multi-sel>
+                  <auto-complete-multi-sel field-key="Model"  field-name="Model" ></auto-complete-multi-sel>
+                </div>
+              </div>
+            </md-tab-body>
+          </md-tab>
+
+          <md-tab label=" Details">
+            <md-tooltip><span>Perform actions (merge, delete...) on existing media</span></md-tooltip>
+            <md-tooltip><span>Search media through filtered query</span></md-tooltip>
+            <md-content class="md-padding">
+              <md-button class="md-raised" ng-click="vm.updateSelectedItems('isDeleted',1)">Delete selected media
+              </md-button>
+              <md-button class="md-raised" ng-click="vm.updateGroupedQuery()">Find Duplicate Media</md-button>
+              <md-button ng-click="" class="md-raised md-action-button "> Close Alert</md-button>
+            </md-content>
+          </md-tab>
+        </md-tabs>
+      </md-content>
+    </div>
+
+  </div>
+</div>
+<!-- / TOOLBAR -->

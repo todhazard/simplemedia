@@ -1,0 +1,10 @@
+<!-- markup for image item in tile view -->
+<div class="photo-container"
+     ng-click="tileVm.toggleItemSelection(tileVm.item)"
+     ng-class="{ 'is-selected':tileVm.item.isSelected}"
+     ng-style="{ 'background-image': 'url(' + tileVm.item.destDir + ')'}">
+  <div class="photo-header"><span class="photo-header-text"></span></div>
+  <div class="photo-body"><span class="photo-header-text"></span></div>
+  <div class="photo-footer"><span class="photo-header-text"></span></div>
+</div>
+

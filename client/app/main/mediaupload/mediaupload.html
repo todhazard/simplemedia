@@ -28,9 +28,7 @@
                         name="fileSelector"
                         ngf-select="onFileSelect($files)"
                         ng-model="mfiles"
-                        ngf-accept="'image/*'"
-                        ngf-pattern="'image/*'"
-                        ngf-max-size="20MB"
+
                         ngf-multiple="true"
                         aria-label="Select media files for upload">
                         <i class="material-icons item-upload-icon">folder_open</i>
@@ -45,7 +43,7 @@
 
         <div flex="" layout-wrap="" layout="row" layout-fill=""
              layout-align="space-between center">
-          <div layout="column" layout-fill  layout-align="center center">
+          <div layout="column" layout-fill layout-align="center center">
 
             <div flex="200" layout-align="center center">
 
@@ -56,13 +54,11 @@
 
               <!-- DISPLAY WHEN NO FILE SELECTION  -->
               <p ng-if="!uploadForm.$invalid && !uploadForm.$dirty" class="alert alert-danger ">
-              <span class="upload-msg">No files Selected</span>
+                <span class="upload-msg">No files Selected</span>
               </p>
 
               <!-- DISPLAY WHEN VALID FILE SELECTION  -->
-              <div ng-if="!uploadForm.$invalid && uploadForm.$dirty">
-
-                <p class="upload-msg">Files Selected: {{ FileList.length }}</p>
+              <div ng-if="!uploadForm.$invalid && uploadForm.$dirty" class="upload-table-wrapper">
 
                 <table class="table simple list-view upload-table">
                   <thead>
@@ -82,13 +78,13 @@
 
                     <!-- TODO: ADD IMAGE EDIT FUNCTIONALITY  -->
                     <!--<td>-->
-                      <!--<md-button-->
-                      <!--title="Open image in editor"-->
-                      <!--class="btn btn-info btn-xs"-->
-                      <!--ng-disabled="stat.items[$index].isUploading || stat.items[$index].isSuccess" >-->
-                      <!--<span class="glyphicon glyphicon-edit"></span> Edit Image-->
-                      <!--</md-button>-->
-                      <!--{{ item.file.name }}-->
+                    <!--<md-button-->
+                    <!--title="Open image in editor"-->
+                    <!--class="btn btn-info btn-xs"-->
+                    <!--ng-disabled="stat.items[$index].isUploading || stat.items[$index].isSuccess" >-->
+                    <!--<span class="glyphicon glyphicon-edit"></span> Edit Image-->
+                    <!--</md-button>-->
+                    <!--{{ item.file.name }}-->
 
                     <!--</td>-->
                     <td ng-show="isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
@@ -139,33 +135,71 @@
                   </tbody>
                 </table>
 
-                <div>
-                  <div>
-                    Queue progress:
-                    <div class="progress" style="">
-                      <progressbar animate="true" value="stat.progress" type="success"><b>{{stat.progress}}%</b>
-                      </progressbar>
-                    </div>
-                    <div>{{stat.message}}</div>
-                  </div>
+                <div layout="row" layout-align="space-between center">
+                  <!--The left side-->
+                   <span>
+                    <p class="upload-msg"> {{ FileList.length }} File(s) Selected</p>
+                  </span>
+                  <!-- middle -->
+                  <span>
+                      <md-progress-linear
+                        md-mode="determinate"
+                        ng-show="uploader.isUploading"
+                        value="{{stat.progress}}"></md-progress-linear>
+                  </span>
+                  <span>
+                      {{stat.message}}
+                  </span>
 
-                  <button type="button" class="btn btn-success btn-s" ng-click="onUploadTriggered()"
-                          ng-disabled="{{stat.uploadButtonEnabled}}">
+                  <!--The right side-->
+                  <span>
+                    <button type="button" class="btn btn-success btn-s"
+                            ng-show="!uploader.isUploading"
+                            ng-click="onUploadTriggered()"
+                            ng-="{{stat.uploadButtonEnabled}}">
                     <span class="glyphicon glyphicon-upload"></span> Upload all
                   </button>
-                  <button type="button" class="btn btn-warning btn-s" ng-click="uploader.cancelAll()"
-                          ng-disabled="!uploader.isUploading">
+                  <button type="button" class="btn btn-warning btn-s"
+                          ng-click="uploader.abortUpload()"
+                          ng-show="uploader.isUploading">
                     <span class="glyphicon glyphicon-ban-circle"></span> Cancel all
                   </button>
                   <button type="button" class="btn btn-danger btn-s" ng-click="uploader.clearQueue()"
-                          ng-disabled="!uploader.queue.length">
+                          ng-disabled="uploader.queue.length<0">
                     <span class="glyphicon glyphicon-trash"></span> Remove all
                   </button>
 
-                  <button type="button" class="btn btn-danger btn-s" ng-click="fupload()">
-                    <span class="glyphicon glyphicon-trash"></span>fuploader
-                  </button>
+                  </span>
                 </div>
+
+
+                <!--<div>-->
+                <!--<div>-->
+                <!--Queue progress:-->
+                <!--<div class="progress" style="">-->
+                <!--<progressbar animate="true" value="stat.progress" type="success"><b>{{stat.progress}}%</b>-->
+                <!--</progressbar>-->
+                <!--</div>-->
+                <!--<div>{{stat.message}}</div>-->
+                <!--</div>-->
+
+                <!--<button type="button" class="btn btn-success btn-s" ng-click="onUploadTriggered()"-->
+                <!--ng-disabled="{{stat.uploadButtonEnabled}}">-->
+                <!--<span class="glyphicon glyphicon-upload"></span> Upload all-->
+                <!--</button>-->
+                <!--<button type="button" class="btn btn-warning btn-s" ng-click="uploader.cancelAll()"-->
+                <!--ng-disabled="!uploader.isUploading">-->
+                <!--<span class="glyphicon glyphicon-ban-circle"></span> Cancel all-->
+                <!--</button>-->
+                <!--<button type="button" class="btn btn-danger btn-s" ng-click="uploader.clearQueue()"-->
+                <!--ng-disabled="!uploader.queue.length">-->
+                <!--<span class="glyphicon glyphicon-trash"></span> Remove all-->
+                <!--</button>-->
+
+                <!--<button type="button" class="btn btn-danger btn-s" ng-click="fupload()">-->
+                <!--<span class="glyphicon glyphicon-trash"></span>fuploader-->
+                <!--</button>-->
+                <!--</div>-->
               </div>
 
 
@@ -182,6 +216,6 @@
   <!-- / CONTENT CARD -->
 
 </div>
-</div>
+
 <!-- / CENTER -->
 

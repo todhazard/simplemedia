@@ -1,0 +1,134 @@
+
+.img-tile-container {
+  //transition: all 500ms ease-out 100ms;
+  width: 100%;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin: 0px 10px 0px 0px;
+  position: absolute;
+  background-color: black;
+  background-position: center center;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+.is-selected-for-delete {
+  .photo-body {
+    background: rgba(0, 0, 0, 0.5);
+  }
+}
+
+.vt-col {
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin: 0px 10px 0px 0px;
+  position: absolute;
+  background-color: black;
+  background-position: center center;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  &:hover {
+    .photo-header, .photo-footer {
+      background: rgba(0, 0, 0, 0.4);
+    }
+  }
+}
+
+/*  style for img tile container gallery view */
+.photo-header, .photo-footer {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  height: 48px;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.0);
+  overflow: hidden;
+  position: absolute;
+  left: 0;
+  right: 0;
+  font-weight: 400;
+  margin: 0 0 0 0;
+  &:hover {
+  }
+}
+
+.photo-container {
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-color: black;
+  background-position: center center;
+
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+
+  overflow: hidden;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  font-weight: 400;
+  margin: 0px 10px 0px 0px;
+  position: absolute;
+  &:hover {
+  }
+}
+
+.is-selected {
+  .photo-header, .photo-footer {
+    background: rgba(0, 0, 0, 0.4);
+  }
+}
+
+.photo-body {
+
+  height: 100%;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+
+  align-items: center;
+  color: #fff;
+
+  overflow: hidden;
+  position: absolute;
+  left: 0;
+  right: 0;
+  font-weight: 400;
+  margin: 0 0 0 0;
+
+}
+
+.photo-header {
+  top: 0;
+}
+
+.photo-footer {
+  bottom: 0;
+}
+
+.photo-header-text {
+  color: rgba(0, 0, 0, 0.18);
+  margin-left: 17px;
+}
+

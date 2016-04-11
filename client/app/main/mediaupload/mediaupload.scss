@@ -131,11 +131,16 @@ table {
   position: relative;
   top: 7px;
 }
-
+.upload-table-wrapper {
+  margin-top: 45px;
+  margin-bottom: 25px;
+}
 .upload-table{
-  th  {text-align: center}
+  th  {text-align: center};
+
 }
 .upload-msg {
+  padding-left:20px;
   opacity: 0.7;
   font-style: italic;
 }

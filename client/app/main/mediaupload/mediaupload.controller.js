@@ -18,7 +18,7 @@
         src64: {},
         srcImg: {},
         bitsFilesCompleted: 0
-      }
+      };
 
       $scope.stat.items = [];
       $scope.isHTML5 = true;
@@ -134,7 +134,6 @@
               $scope.uploadError = true;
               $scope.stat.items[index].isError = true;
               $scope.stat.message = "Error Encountered: " + resp.status;
-               console.log(resp);
               $scope.stat.uploadButtonEnabled = false;
               return false;
             }, function (evt) {

@@ -6,112 +6,55 @@
     .controller('mediaCtrl', mediaCtrl);
 
   /** @ngInject */
-  function mediaCtrl($scope, mediaFactory, $mdDialog, $mdMedia, $document) {
-    //   //function mediaCtrl($scope, mediaFactory, configData) {
+  function mediaCtrl($scope, mediaFactory, $mdDialog, $document, $rootScope, globalConstants, $mdMedia) {
 
     var vm = this;
     angular.extend(vm, mediaFactory);
 
+    console.log("in header controller")
     // set default date selection range
     var startDateStr = moment().subtract(1, 'm').format('YYYY-MM-DD').toString();
-    vm.startDate = new Date(startDateStr.split("-"));
-
     var endDateStr = moment().format('YYYY-MM-DD').toString();
 
-    vm.endDate = new Date(endDateStr.split("-"));
-
-    // set default date selection min/max
-    vm.minDate = new Date("2001-11-12".split(","));
-    vm.maxDate = vm.endDate;
-
-    vm.updateSearchQuery = function(){
-      mediaFactory.updateSearchQuery("Date Pick", [vm.startDate, vm.endDate]);
-    };
-
-    console.log("mediaFactory.odata.fieldModels")
-    console.log(mediaFactory.odata.fieldModels)
+    var updateMonthlyViewQuery = function () {
+      var groupByFields = [];
 
 
-    var flds = [
-      'Directory',
-      'FileName',
-      'Make',
-      'destDir',
-      'Model',
-      'Orientation',
-      'datePick',
-      'FileSize',
-      'GPSPosition',
-      'GPSAltitude'
-    ];
+      // if view displays grouped sets
+      if (globalConstants.userState.selectedView === "groupView") {
 
-    // todo: specify members
+        groupByFields = [
+          'FileName',
+          'Make',
+          'Model',
+          'datePick',
+          'FileSize'];
+      }
 
-    vm.rows.vals = [];
-
-
-    vm.setYear = function (y) {
-      vm.odata.enums.years.selected = y;
-      updateQuery()
+      mediaFactory
+        .fields(vm.odata.fieldsList)
+        .filter("substringof(datePick,'" + vm.odata.dates.selectedYear + "-" + vm.odata.dates.selectedMonth + "')")
+        .groupBy(groupByFields)
+        .query(function (result) {
+          console.log("in query, result = ")
+          console.log(result)
+          if (globalConstants.userState.selectedView === "groupView") {
+            console.log("vm.rows.vals")
+            //console.log(JSON.stringify(result))
+          }
+          vm.rows.vals = result;
+        });
 
     };
 
-
-    vm.setMonth = function (m) {
-      vm.odata.enums.months.selected = m;
-      updateQuery();
-    };
-
-    var getSelectedMediaItemIds = function () {
-      // put selected item ids to a list
-      var selectedItemList = [];
-      angular.forEach(vm.rows.vals, function (item) {
-        if (item.isSelected) {
-          console.log("item selected")
-          selectedItemList.push(item._id);
-        } else {
-          console.log("not selected")
-
-        }
-      });
-      return selectedItemList;
-    }
-
-    /*
-     *  Controller method takes key/field and updates items determined to be selected
-     * */
     vm.updateSelectedItems = function (key, val) {
-
-      // define update object
-      var updateDef = {"keyval": {}};
-      updateDef.keyval[key] = val;
-      updateDef.ids = getSelectedMediaItemIds();
-
-      //  send def to bach update service
-      mediaFactory.runBatchUpdate(updateDef);
+      mediaFactory.updateSelectedItems(key, val)
     };
+
     vm.updateBoolField = function (field, fieldName) {
 
       field[fieldName] = field[fieldName] * -1;
-    },
-      vm.updateGroupedQuery = function () {
-
-        mediaFactory
-          .fields(flds)
-          .filter("substringof(datePick,'" + vm.odata.enums.years.selected + "-" + vm.odata.enums.months.selected + "')")
-          .groupBy([
-            'FileName',
-            'Make',
-            'Model',
-            'datePick',
-            'FileSize'])
-          .orderBy(['datePick', 'asc'])
-          .query(function (result) {
-            vm.rows.vals = result;
-
-          });
-      };
-
+    };
 
     vm.showMediaDialog = function (e, mediaItem) {
 
@@ -146,7 +89,56 @@
 
     }
 
+    vm.startDate = new Date(startDateStr.split("-"));
+    vm.endDate = new Date(endDateStr.split("-"));
 
+    // set default date selection min/max
+    vm.minDate = new Date("2001-11-12".split("-"));
+
+    vm.maxDate = vm.endDate;
+
+    vm.updateSearchQuery = function () {
+      mediaFactory.updateSearchQuery("Date Pick", [vm.startDate, vm.endDate]);
+    };
+
+    vm.updateSelectedItems = function (key, val) {
+      mediaFactory.updateSelectedItems(key, val)
+    };
+
+    vm.updateGroupedQuery = function () {
+
+      mediaFactory
+        .fields(flds)
+        .filter("substringof(datePick,'" + vm.odata.dates.selectedYear + "-" + vm.odata.dates.selectedMonth + "')")
+        .groupBy([
+          'FileName',
+          'Make',
+          'Model',
+          'datePick',
+          'FileSize'])
+        //  .orderBy(['datePick', 'asc'])
+        .query(function (result) {
+          vm.rows.vals = result;
+        });
+    };
+
+    vm.setYear = function (y) {
+      console.log("setYear")
+
+      vm.odata.dates.selectedYear = y; //todo: remove
+
+      updateMonthlyViewQuery()
+
+    };
+
+
+    //,,,
+    vm.setMonth = function (m) {
+      console.log("set month")
+      vm.odata.dates.selectedMonth = m; //todo: remove
+      updateMonthlyViewQuery();
+    };
+    
   }
 })();
 

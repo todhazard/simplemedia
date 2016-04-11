@@ -26,29 +26,19 @@
         }
       });
 
-    // Translation
-  //  $translatePartialLoaderProvider.addPart('app/main/mediaupload');
 
-    // Api
-    //msApiProvider.register('mediaupload', ['app/data/mediaupload/mediaMonthly.json']);
-  //  msApiProvider.register('mediaMonthly', ['app/data/mediaMonthly/mediaMonthly.json']);
-    // Navigation
-    //msNavigationServiceProvider.saveItem('fuse', {
-    //    title : 'mediaupload',
-    //    group : true,
-    //    weight: 1
-    //});
+
 
     // define sidebar
-    msNavigationServiceProvider.saveItem('app.mediaupload', {
-      title    : 'mediaupload',
+    msNavigationServiceProvider.saveItem('apps.mediaupload', {
+      title    : 'Upload Media',
       icon     : 'icon-tile-four',
       state    : 'app.mediaupload',
       /*stateParams: {
        'param1': 'page'
        },*/
-      translate: 'Add Media',
-      weight   : 1
+     // translate: 'Add Media',
+    //  weight   : 1
     });
   }
 })();

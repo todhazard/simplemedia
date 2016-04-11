@@ -11,6 +11,11 @@
     {
         var vm = this;
 
+        // Data
+        vm.helloText = "some hello text";//LoginData.data.helloText;
 
+        // Methods
+
+        //////////
     }
 })();

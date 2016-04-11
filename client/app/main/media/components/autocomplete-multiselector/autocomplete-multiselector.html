@@ -1,0 +1,32 @@
+<md-chips ng-model="ac.selectedItems" md-autocomplete-snap="" md-require-match="true">
+
+  <md-autocomplete
+    md-floating-label="{{ac.label}}"
+    md-selected-item-change="ac.updateItems()"
+    md-search-text-change="ac.updateText()"
+    md-selected-item="ac.selectedItem"
+    md-search-text="ac.searchText"
+    md-items="item in ac.querySearch(ac.searchText)"
+    md-item-text="item.name"
+    md-autoselect
+    md-min-length="0">
+
+    <md-item-template>
+      <span md-highlight-text="ac.searchText" md-highlight-flags="^i">{{item.name}} </span>
+    </md-item-template>
+
+  </md-autocomplete>
+  <md-chip-template id="{{ac.fieldKey}}">
+        <span>
+          <strong>{{$chip.name}}</strong>
+        </span>
+  </md-chip-template>
+</md-chips>
+
+
+
+
+
+
+
+

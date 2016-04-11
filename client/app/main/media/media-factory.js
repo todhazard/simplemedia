@@ -10,8 +10,7 @@
     .factory("mediaFactory", mediaFactory);
 
   /** @ngInject */
-  function mediaFactory($http, configSvc, globalVals) {
-
+  function mediaFactory($http, configSvc, globalVals, globalConstants) {
 
     var monthsDirs = [], /// todo: move to odata collection
 
@@ -37,16 +36,78 @@
         grouped: [], // fields to render in ui
         fieldsList: [], // fields to render in ui
         enums: [],
-        fieldModels: []
+        fieldModels: [],
+        dates: {}
       },
-      viewTemplateUrls = {
-        "list": 'app/main/mediavt/mediaview-list.html',
-        "tile": 'app/main/mediavt/media-tile-grid.html',
-        "card": 'app/main/mediavt/media-card-grid.html',
+
+      selectedItems = {},
+
+      mergeAllGroups = function () {
+        var updateObj = {
+          "type":"merge",
+          "updates": []
+        };
+
+        odata.result.forEach(function (group) {
+          var groupList  = _.map(group, function(item){
+              return item._id;
+            });
+          updateObj.updates.push(groupList);
+
+        });
+        runBatchUpdate(updateObj);
+      },
+
+      mergeGroup = function (group) {
+        var updateObj = {
+          "type":"merge",
+          "updates": []
+        };
+
+          var groupList  = _.map(group, function(item){
+            return item._id;
+          });
+          updateObj.updates.push(groupList);
+
+        runBatchUpdate(updateObj);
+
+      },
+      writeGroupMergeDefiniton = function () {
+        var updates = [];
+        odata.result.forEach(function (group) {
+          updates.push(_.map(group, function(item){
+            return item.name;
+          }))
+        });
       },
 
 
-    // calculate page start, and return paging portion og the odata url
+      initializeDateDefaultParams = function () {
+        var startDateStr = moment().subtract(1, 'm').format('YYYY-MM-DD').toString();
+        var endDateStr = moment().format('YYYY-MM-DD').toString();
+
+        odata.dates = {
+          selectedDateStart: new Date(startDateStr.split("-")),
+          selectedDateEnd: new Date(endDateStr.split("-")),
+          minDate: new Date("2001-11-12".split("-")),
+          maxDate: new Date(endDateStr.split("-")),
+          enums: {
+            yearsList: [],
+            monthsList: ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'],
+          }
+        };
+
+        // create list of years for year/month selections, between min and current year
+        var minYr = odata.dates.minDate.getFullYear();
+        var maxYr = odata.dates.maxDate.getFullYear();
+
+        for (var y = minYr; y <= maxYr; y++) {
+          odata.dates.enums.yearsList.push(y);
+        }
+      },
+
+
+    // calculate page start, and return paging portion of the odata url
       getPageOdataUrl = function () {
         rows.currentN = (pages.currentN - 1) * pages.rowsPerPage;
         var url = "&$skip=";
@@ -55,6 +116,7 @@
         url += pages.rowsPerPage;
         return url;
       },
+//todo remove
 
       prepEnumList = function (from, to, prefix, style, maxLength) {
         var list = [];
@@ -74,24 +136,45 @@
           monthsDirs.push(monthsList[m] + '-' + moment.monthsShort(m));
         }
       },
-      getDestDir = function (img, size) {
-        size = size || '_ti';
+      buildMonthFolderName = function () {
 
-        var destpath = "";
-        try {
-          if (img.datePick && img.datePick.length > 10) {
-            var ddate = img.datePick,
-              monthI = moment(ddate).month(),
-              year = moment(ddate).year().toString(),
-              id = img._id.toString(),
-              result = '/assets/images/app/' + year + '/' + monthsDirs[monthI] + '/' + id + size + ".jpg" || "";
-
-            return result;
-          }
-        } catch (e) {
+        for (var i = 0; i < 12; i++) {
+          var mo = "0" + (i + 1);
+          mo = mo.slice(-2);
 
         }
-        return destpath;
+      },
+
+
+    /* determine img source path based on image id and creation date */
+      getDestDir = function (img) {
+
+        var config = {
+          dates: {
+            format: "YYYY-MM-DD"
+          },
+          img: {
+            size: "_ti",
+            extension: ".jpg",
+            basePath: "/assets/images/app"
+          }
+        };
+
+        //get moment date object
+        var pathParts = [];
+
+        // if date string is defined, assign to moment object
+        // and use object to define source folder path
+        if (img.datePick) {
+          var md = moment(img.datePick, config.dates.format);
+          if (md.isValid()) {
+            pathParts.push(config.img.basePath);                                   // base path
+            pathParts.push(md.format("YYYY"));                                      // year folder name
+            pathParts.push(md.format("MM") + "-" + moment.monthsShort(md.month())); // month folder name
+            pathParts.push(img._id.toString() + config.img.size + config.img.extension); // file name
+          }
+        }
+        return pathParts.join("/");
       },
 
       filter = function (val) {
@@ -125,15 +208,16 @@
 
 
       updateQuery = function () {
-        mediaFactory
-          .fields(flds)
-          //         .fields(mediaFactory.getSelectedFieldNames())
-          .filter("substringof(datePick,'" + vm.odata.enums.years.selected + "-" + vm.odata.enums.months.selected + "')")
-          .query(function (result) {
-            // cl("update quesry")
-            //  cl(result)
-            vm.rows.vals = result;
-          });
+        cl("updateQuery called")
+        // mediaFactory
+        //   .fields(flds)
+        //   //         .fields(mediaFactory.assembleSelectedFieldsOdata())
+        //   .filter("substringof(datePick,'" + vm.odata.enums.years.selected + "-" + vm.odata.enums.months.selected + "')")
+        //   .query(function (result) {
+        //     // cl("update quesry")
+        //     //  cl(result)
+        //     vm.rows.vals = result;
+        //   });
 
       },
 
@@ -152,32 +236,31 @@
         });
 
       },
+    // todo: replace
+    //   setInitialDateSelection = function () {
+    //     // set default dates
+    //     var startDateStr = moment().subtract(1, 'm').format('YYYY-MM-DD').toString();
+    //     var endDateStr = moment().format('YYYY-MM-DD').toString();
+    //
+    //     var fieldObj = getFieldModelByKey("datePick");
+    //     fieldObj.filterVals = [new Date(startDateStr.split("-")), new Date(endDateStr.split("-"))];
+    //
+    //   },
 
-      setInitialDateSelection = function () {
-        // set default dates
-        var startDateStr = moment().subtract(1, 'm').format('YYYY-MM-DD').toString();
-        var endDateStr = moment().format('YYYY-MM-DD').toString();
 
-        var fieldObj = getFieldModelByKey("datePick");
-        fieldObj.filterVals = [new Date(startDateStr.split("-")), new Date(endDateStr.split("-"))];
+    //  assembleDateSearchOdata = function () {
+    //    var searchStr = "$filter=";
+    //    var field = getFieldModelByName("Date Pick");
+    //
+    // //   var startDateStr = moment(field.filterVals[0]).subtract(1, 'd').format('YYYY-MM-DD').toString();
+    //  //  var endDateStr = moment(field.filterVals[1]).add(1, 'd').format('YYYY-MM-DD').toString();
+    //
+    //    searchStr += "datePick gt '" + startDateStr + "' and datePick lt '" + endDateStr + "' and ";
+    //    return searchStr;
+    //
+    //  },
 
-      },
-
-
-      assembleDateSearchOdata = function () {
-        var searchStr = "$filter=";
-        var field = getFieldModelByName("Date Pick");
-
-        var startDateStr = moment(field.filterVals[0]).subtract(1, 'd').format('YYYY-MM-DD').toString();
-        var endDateStr = moment(field.filterVals[1]).add(1, 'd').format('YYYY-MM-DD').toString();
-
-        searchStr += "datePick gt '" + startDateStr + "' and datePick lt '" + endDateStr + "' and ";
-        return searchStr;
-
-      },
-
-      getSelectedFieldNames = function () {
-
+      assembleSelectedFieldsOdata = function () {
 
         var sortedFieldsList = _.sortBy(odata.fieldModels, "fieldOrder");
         var fieldsList = [];
@@ -192,48 +275,97 @@
 
       },
 
-      assembleSearchValsOdata = function () {
-        var searchStr = assembleDateSearchOdata()
+      setFieldsList = function () {
+
+        var sortedFieldsList = _.sortBy(odata.fieldModels, "fieldOrder");
+        odata.fieldsList = [];
+
+        angular.forEach(sortedFieldsList, function (field) {
+          if (field.isSelected) {
+            odata.fieldsList.push(field.key);
+          }
+        });
+        //    cl("in init odata.fieldsList")
+        //   cl(odata.fieldsList)
+      },
+
+    //Assemble the  filter portion of the odata url string
+      assembleSearchFilterValsOdata = function () {
+
+        // define date range cutoff (+/- a day)
+        var startDateStr = moment(odata.dates.selectedDateStart).subtract(1, 'd').format('YYYY-MM-DD').toString();
+        var endDateStr = moment(odata.dates.selectedDateEnd).add(1, 'd').format('YYYY-MM-DD').toString();
+
+        //  write Date Search portion of Odata filter
+        var searchStr = "$filter=datePick gt '" + startDateStr + "' and datePick lt '" + endDateStr + "' and ";
         var tmpStr = "";
 
+        // write All  remaining filters, defined in field model
         angular.forEach(odata.fieldModels, function (field) {
           if (field.filterVals.length > 0 && field.key != "datePick") {
             tmpStr = field.key + " eq '" + field.filterVals.join("' or " + field.key + " eq '") + "' and ";
             searchStr += tmpStr; // tmpStr.slice(1);
           }
         });
-        console.log("getSelectedFieldNames")
-        console.log(getSelectedFieldNames())
+
+        //  truncate trailing "and" , and return
         return searchStr.slice(0, -5);
       },
 
 
     /* put search selections to collection, assemble odata url, and call media service to update data display */
-      updateSearchQuery = function (fieldName, filterVals) {
-
+      updateSearchQuery = function (fieldName, filterVals, groupByFields) {
+        //console.log("updateSearchQuery() called")
+        groupByFields = groupByFields || false;
         var fieldObj = getFieldModelByName(fieldName)
         fieldObj.filterVals = filterVals;
+        //    cl("in updateSearchQuery filter vals =")
+        //   cl(filterVals);
 
-        var odataUrl = odata.urlBase + '?' + assembleSearchValsOdata() + getSelectedFieldNames();
-        console.log(" searchString ")
-        console.log(odataUrl)
-        requestSearchData(odataUrl)
+        var odataUrl = odata.urlBase + '?' + assembleSearchFilterValsOdata() + assembleSelectedFieldsOdata();
+        //   cl("odataUrl=");
+        //   cl(odataUrl);
+        //   console.log(" searchString ")
+        //   console.log(odataUrl)
+
+
+        requestSearchData(odataUrl, groupByFields)
 
       },
 
-      requestSearchData = function (odataUrl) {
+
+      requestSearchData = function (odataUrl, groupByFields) {
+        //console.log("in requestSearchData")
 
         doQuery(odataUrl, function (result) {
-          console.log("result")
-          console.log(result)
+
           odata.result = initializeData(result.data.value);
 
-          rows.vals = putListTo2d(odata.result, 3);
+          if (groupByFields) {
+            //console.log("rows.vals")
+            //console.log(JSON.stringify(rows.vals))
+            rows.vals = doGroupBy(odata.result, groupByFields);
 
+          } else {
+            rows.vals = putListTo2d(odata.result, 3);
+          }
 
         })
       },
 
+      toggleItemSelection = function (id) {
+        selectedItems[id] = !selectedItems[id];
+        return selectedItems[id];
+      },
+
+      updateSelectedItems = function (key, val) {
+        var updateDef = {"keyval": {}};
+        updateDef.keyval[key] = val;
+        updateDef.ids = selectedItems;
+      },
+
+
+    //  send def to bach update service
       runBatchUpdate = function (updateDef, callback, errCallback) {
 
         var url = globalVals.batchApiUrl;
@@ -261,10 +393,10 @@
         })
       },
       fields = function (flds) {
-        if (!flds) {
-          return odata.fieldsList;
-        }
-        odata.fieldsList = flds;
+        //  if (!flds) {
+        //  return odata.fieldsList;
+        //  }
+        //   odata.fieldsList = flds;
         return this
       },
 
@@ -274,18 +406,38 @@
         // todo : refactor to createOdataUrl method
         var url = odata.urlBase;        // Base url // filterStr + fieldsString + getPageOdataUrl();
         url += "/?$filter=" + odata.filters.join(" and "); // add  filters to odata url
-        url += "&$select=" + odata.fieldsList.join(",");   // add selcted fields to odata url
-
+        url += "&$select=" + odata.fieldsList.join(",");   // add selected fields to odata url
+        var groupByFields = odata.groupByFields;
         clearLastQueryParams();
 
         doQuery(url, function (result) {
           odata.result = initializeData(result.data.value);
 
-          if (odata.groupByFields.length > 0) {
-            doGroupBy();
-          }
+          if (globalConstants.userState.selectedView === "groupView") {
+            //console.log("data.groupByFields.length > 0")
 
-          odata.result = putListTo2d(odata.result, 3);
+            odata.result = doGroupBy(odata.result, groupByFields);
+          } else if (globalConstants.userState.selectedView === "tileView") {
+            odata.result = putListTo2d(odata.result, 3);
+          } else if (globalConstants.userState.selectedView === "listView") {
+            odata.result = odata.result;
+          }
+          /*
+           "simpleFilter": 'app/main/media/header/header.html',
+           "listView": 'app/main/media/list.html',
+           "tileView": 'app/main/media/grid.html',
+           "groupView": 'app/main/media/media-view-card.html',
+           "largeView": 'app/main/media/grid.html',
+           "galleryView"
+           * */
+          // if (groupByFields.length > 0) {
+          //   console.log("data.groupByFields.length > 0")
+          //
+          //   odata.result = doGroupBy(odata.result, groupByFields);
+          // } else {
+          //   odata.result = putListTo2d(odata.result, 3);
+          // }
+
 
           if (callback) {
             callback(odata.result)
@@ -300,7 +452,75 @@
 
     //  group data into sets - based on fields specified - to collection.
     // (used to identify any potential duplicate media)
-      doGroupBy = function () {
+      doGroupBy = function (mediaList, groupByFieldList) {
+        //   var groupedSet = {}; // store grouped data
+        //   var result = {}; // store grouped data where set n > 1
+
+
+        // for each media item, join group fields to a single string
+        // angular.forEach(mediaList, function (mediaItem) {
+        //   var uid = _(groupByFieldList)
+        //     .map(function (field) {
+        //       return mediaItem[field] || "";
+        //     })
+        //     .join("-");
+        //
+        //   // add item to collection of arrays separated according to that string
+        //   groupedSet[uid] = groupedSet[uid] || [];
+        //   groupedSet[uid].push(mediaItem);
+        //
+        //   if(groupedSet[uid].length>1){
+        //     result[uid]=groupedSet[uid];
+        //   }
+        //
+        // });
+        // group by fields
+        // var result = _.groupBy(mediaList,  function (val) {
+        //   //// get instance vals for specified vals, to create unique key for each field-val combination
+        //   return   _(groupByFieldList).map(function(field){
+        //     return val[field]
+        //   }).join("-");
+
+        //   group on key made of each field-to-group/item
+        var result = _(mediaList).groupBy(function (val) {
+            return _(groupByFieldList).map(function (field) {
+              return val[field]
+            }).join("-")
+          })
+          // filter where group has > 1 item
+          .filter(function (grp) {
+            return grp.length > 1;
+          })
+          .value();
+
+        return result;
+      },
+      doGroupByggg = function (mediaList, groupByFieldList) {
+        var groupedSet = {}; // store grouped data
+        var result = {}; // store grouped data where set n > 1
+
+
+        // for each media item, join group fields to a single string
+        angular.forEach(mediaList, function (mediaItem) {
+          var uid = _(groupByFieldList)
+            .map(function (field) {
+              return mediaItem[field] || "";
+            })
+            .join("-");
+
+          // add item to collection of arrays separated according to that string
+          groupedSet[uid] = groupedSet[uid] || [];
+          groupedSet[uid].push(mediaItem);
+
+          if (groupedSet[uid].length > 1) {
+            result[uid] = groupedSet[uid];
+          }
+
+        });
+        //console.log(result)
+        return result;
+      },
+      doGroupBy2 = function () {
 
         var uniqValSets = [];
         var result = [];
@@ -327,7 +547,6 @@
         odata.result = result;
 
       },
-
 
       setSelectionButtonStyles = function () {
         _.each(['months', 'years'], function (fieldName) {
@@ -366,7 +585,6 @@
         return resultList;
       },
       groupBy = function (fields) {
-        console.log("group by files set")
         odata.groupByFields = fields;
 
         return this;
@@ -398,7 +616,9 @@
 
       },
       init = function () {
-        buildMonthsList();
+        //  buildMonthsList();
+        initializeDateDefaultParams();
+
         odata.enums.years = prepEnumList(2000, moment().year(), false, 'unselected-gallery-category');
 
         odata.enums.months = prepEnumList(1, 12, '0', 'unselected-gallery-category', 2);
@@ -411,7 +631,8 @@
         // get config params
         configSvc.get(function (response) {
           odata.fieldModels = response.fieldModels;
-          setInitialDateSelection();
+          setFieldsList();
+          //    setInitialDateSelection();
         });
 
       };
@@ -430,10 +651,15 @@
       "initializeData": initializeData,
       "putListTo2d": putListTo2d,
       "runBatchUpdate": runBatchUpdate,
-      "getSelectedFieldNames": getSelectedFieldNames,
+      "assembleSelectedFieldsOdata": assembleSelectedFieldsOdata,
       "subStringOf": subStringOf,
       "updateQuery": updateQuery,
-      "updateSearchQuery": updateSearchQuery,
+      "toggleItemSelection": toggleItemSelection,
+      "updateSearchQuery": updateSearchQuery, 
+      "updateSelectedItems": mergeAllGroups,
+      "mergeAllGroups": mergeAllGroups,
+      "mergeGroup": mergeGroup,
+
 
     };
   }

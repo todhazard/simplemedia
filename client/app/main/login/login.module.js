@@ -32,7 +32,7 @@
         $translatePartialLoaderProvider.addPart('app/main/login');
 
         // Api
-
+   //    msApiProvider.register('login', ['app/data/sample/sample.json']);
 
         // sidebar - define/set parent menu
         msNavigationServiceProvider.saveItem('fuse', {

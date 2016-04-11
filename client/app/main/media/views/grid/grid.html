@@ -1,0 +1,25 @@
+<!-- data view -->
+
+<div layout="row">
+  <div flex="">
+    <md-content flex-gt-sm="90" flex-gt-md="100" layout="row" layout-align="center center">
+      <md-list class="table-fixed-width ">
+        <md-virtual-repeat-container ng-style="ctrl.listStyle" style="height:600px; width:1200px;">
+          <!-- for each media row -->
+          <md-list-item md-virtual-repeat="row in vm.rows.vals" class="repeated-item " flex="">
+            <md-list flex layout="row" class="vt-row">
+              <!-- for each media item in row -->
+              <md-list-item  ng-repeat="mediaItem in row" >
+                <img-tile item="mediaItem"></img-tile>
+              </md-list-item>
+            </md-list>
+          </md-list-item>
+        </md-virtual-repeat-container>
+      </md-list>
+    </md-content>
+  </div>
+</div>
+
+
+
+
